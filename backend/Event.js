@@ -6,7 +6,7 @@ const sequelize = require('./db'); // Import the configured Sequelize instance
 const Event = sequelize.define('Event', {
     title: {
         type: DataTypes.STRING,
-        allowNull: false, // Title is required
+        allowNull: false // Title is required
     },
     description: {
         type: DataTypes.TEXT
@@ -18,7 +18,8 @@ const Event = sequelize.define('Event', {
         type: DataTypes.STRING
     },
     date: {
-        type: DataTypes.DATE
+        type: DataTypes.DATE,
+        allowNull: false
     }
 });
 
