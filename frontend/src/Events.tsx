@@ -1,46 +1,60 @@
 import { useState, useEffect } from 'react';
-
-type Event = {
-  id: number;
-  title: string;
-  description?: string;
-  type?: string
-  location?: string;
-  date: Date;
-};
+import { Link } from 'react-router-dom';
+import type { Event } from './EventType';
 
 function Events() {
     const [events, setEvents] = useState<Event[]>([]);
+    const [locations, setLocations] = useState<string[]>([]);
 
-  useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const response = await fetch('http://localhost:3000/events');
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+    useEffect(() => {
+        const fetchEvents = async () => {
+            try {
+                const response = await fetch('http://localhost:3000/events');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                setEvents(data);
+                const uniqueLocations = findLocations();
+                setLocations(uniqueLocations);
+            } catch (error) {
+                console.error('Error fetching events:', error);
+            }
         }
-        const data = await response.json();
-        setEvents(data);
-      } catch (error) {
-        console.error('Error fetching events:', error);
-      }
-    }
-    fetchEvents();
-  }, []);
+        fetchEvents();
+    }, [events]);
 
-  return (
-    <>
-      {events.map(event => (
-        <div key={event.id} className='event-card'>
-          <h3>{event.title}</h3>
-          {/* <p>{event.description}</p>
-          <p>{event.type}</p>
-          <p>{event.location}</p>
-          <p>{new Date(event.date).toLocaleDateString()}</p> */}
-        </div>
-      ))}
-    </>
-  );
+    const findLocations = () => {
+        const seen = new Set();
+
+        events.map(event => {
+            if (!seen.has(event.location)) {
+                seen.add(event.location);
+                return event.location;
+            }
+        });
+
+        return [...seen] as string[];
+    }
+
+    return (
+        <>
+            {/* Filter by location: */}
+            <label htmlFor="location-filter" style={{ marginRight: 10 }}>Filter by location:</label>
+            <select name="" id="">
+                <option value="">All</option>
+                {locations.map(location => (
+                    <option key={location} value={location}>{location}</option>
+                ))}
+            </select>
+
+            {events.map(event => (
+                <div key={event.id} className='event-card'>
+                    <Link to={`/events/${event.id}`}><h3>{event.title}</h3></Link>
+                </div>
+            ))}
+        </>
+    );
 }
 
 export default Events;

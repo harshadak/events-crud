@@ -30,14 +30,14 @@ const dummyEvents = [
         title: "Yoga in the Park",
         description: "Outdoor yoga session for all experience levels.",
         type: "Wellness",
-        location: "Brooklyn, NY",
+        location: "New York, NY",
         date: new Date("2026-03-10T08:00:00")
     },
     {
         title: "AI & Education Panel",
         description: "Discussion on the future of AI in EdTech.",
         type: "Panel",
-        location: "Boston, MA",
+        location: "New York, NY",
         date: new Date("2026-04-05T17:00:00")
     },
     {
