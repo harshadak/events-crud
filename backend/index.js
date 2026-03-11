@@ -15,6 +15,8 @@ app.use(express.json()); // json -> JS object
 // Routes
 // Get all events
 app.get('/events', async (req, res) => {
+    const { location } = req.query; // Extract the location query parameter from the request
+    console.log(location);
     try {
         const events = await Event.findAll(); // Fetch all events from the database
         res.status(200).json(events); // Send the events as a JSON response
