@@ -18,8 +18,14 @@ app.get('/events', async (req, res) => {
     const { location } = req.query; // Extract the location query parameter from the request
     console.log(location);
     try {
-        const events = await Event.findAll(); // Fetch all events from the database
-        res.status(200).json(events); // Send the events as a JSON response
+        if (location) {
+            console.log(`Filtering events by location: ${location}`);
+            const events = await Event.findAll({ where: { location } });
+            res.status(200).json(events);
+        } else {
+            const events = await Event.findAll(); // Fetch all events from the database
+            res.status(200).json(events); // Send the events as a JSON response
+        }
     } catch (error) {
         console.error('GET /events error:', error);
         res.status(500).json({ error: 'An error occurred while fetching events.' });
@@ -32,7 +38,7 @@ app.get('/events/:id', async (req, res) => {
 
     try {
         const event = await Event.findByPk(id); // Fetch the event with the specified ID from the database
-        
+
         if (!event) {
             return res.status(404).json({ error: 'Event not found.' }); // If no event is found, send a 404 response
         }

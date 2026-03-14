@@ -17,26 +17,33 @@ function Events() {
                 }
                 const data = await response.json();
                 setEvents(data);
-                const uniqueLocations = findLocations(data);
-                console.log('uniqueLocations:', uniqueLocations);
-                setLocations(uniqueLocations);
             } catch (error) {
                 console.error('Error fetching events:', error);
             }
         }
         fetchEvents();
+        findLocations();
     }, [filteredLocation]);
 
-    const findLocations = (events: Event[]) => {
-        const seen = new Set();
-        events.map(event => {
-            if (!seen.has(event.location)) {
-                seen.add(event.location);
-                return event.location;
-            }
-        });
+    const findLocations = async () => {
 
-        return [...seen] as string[];
+        try {
+            const response = await fetch(`http://localhost:3000/events`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            const seen = new Set();
+            data.map((event: Event) => {
+                if (!seen.has(event.location)) {
+                    seen.add(event.location);
+                    return event.location;
+                }
+            });
+            setLocations([...seen] as string[]);
+        } catch (error) {
+            console.error('Error fetching events:', error);
+        }
     }
 
     const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
