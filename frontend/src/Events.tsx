@@ -6,12 +6,16 @@ function Events() {
     const [events, setEvents] = useState<Event[]>([]);
     const [locations, setLocations] = useState<string[]>([]);
     const [filteredLocation, setFilteredLocation] = useState<string>("");
+    const [keyword, setKeyword] = useState<string>("");
+    const [debouncedKeyword, setDebouncedKeyword] = useState(keyword);
 
     useEffect(() => {
         const fetchEvents = async () => {
             const locationQuery = filteredLocation ? `?location=${encodeURIComponent(filteredLocation)}` : '';
+            const keywordQuery = debouncedKeyword ? `${locationQuery ? "&" : "?"}keyword=${encodeURIComponent(debouncedKeyword)}` : '';
+
             try {
-                const response = await fetch(`http://localhost:3000/events${locationQuery}`);
+                const response = await fetch(`http://localhost:3000/events${locationQuery}${keywordQuery}`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
@@ -23,7 +27,15 @@ function Events() {
         }
         fetchEvents();
         findLocations();
-    }, [filteredLocation]);
+    }, [filteredLocation, debouncedKeyword]);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedKeyword(keyword);
+        }, 500);
+
+        return () => clearTimeout(timer);
+    }, [keyword]);
 
     const findLocations = async () => {
 
@@ -51,8 +63,13 @@ function Events() {
         setFilteredLocation(e.target.value);
     }
 
+    // console.log('keyword = ', keyword);
+    // console.log('debouncedKeyword = ', debouncedKeyword);
+
     return (
         <>
+            {/* Text based search */}
+            <input type='text' value={keyword} onChange={(e) => setKeyword(e.target.value)} placeholder='Search by keyword' />
             {/* Filter by location: */}
             <label htmlFor="location-filter" style={{ marginRight: 10 }}>Filter by location:</label>
             <select name="" id="" onChange={(e) => handleChange(e)} value={filteredLocation}>
@@ -67,6 +84,8 @@ function Events() {
                     <Link to={`/events/${event.id}`}><h3>{event.title}</h3></Link>
                 </div>
             ))}
+
+            {events.length === 0 && <div style={{ marginTop: 24}}>No events matching the filters! Please try again.</div>}
         </>
     );
 }

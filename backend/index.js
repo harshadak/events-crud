@@ -15,17 +15,20 @@ app.use(express.json()); // json -> JS object
 // Routes
 // Get all events
 app.get('/events', async (req, res) => {
-    const { location } = req.query; // Extract the location query parameter from the request
-    console.log(location);
+    const { location, keyword } = req.query; // Extract the location query parameter from the request
+    console.log("LOCATION? ", location, "keyword", keyword);
+
     try {
+        let events = await Event.findAll();
+
         if (location) {
-            console.log(`Filtering events by location: ${location}`);
-            const events = await Event.findAll({ where: { location } });
-            res.status(200).json(events);
-        } else {
-            const events = await Event.findAll(); // Fetch all events from the database
-            res.status(200).json(events); // Send the events as a JSON response
+            events = events.filter((event) => event.location === location);
         }
+        if (keyword) {
+            events = events.filter((event) => event.title.toLowerCase().includes(keyword.toLowerCase()));
+        }
+
+        res.status(200).json(events);
     } catch (error) {
         console.error('GET /events error:', error);
         res.status(500).json({ error: 'An error occurred while fetching events.' });
