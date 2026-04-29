@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import type { Event } from './EventType';
+import type { EventType } from './types/EventType';
 
-const EMPTY_EVENT: Event = {
+const EMPTY_EVENT: EventType = {
   id: 0,
   title: "",
   description: "",
@@ -12,7 +12,7 @@ const EMPTY_EVENT: Event = {
 }; // Check if this is necessary or if we can just use null and handle it in the component
 
 function EventCard() {
-    const [event, setEvent] = useState<Event>(EMPTY_EVENT);
+    const [event, setEvent] = useState<EventType>(EMPTY_EVENT);
     const { id } = useParams();
     console.log(useParams());
 
@@ -43,6 +43,7 @@ function EventCard() {
                 <p>{event.date && new Date(event.date).toLocaleDateString()}</p>
             </div>
             <Link to="/events" className="btn">Go back to Events</Link>
+            <Link to={`/events/edit-form/${id}`}> Edit Event</Link>
         </>
     );
 }

@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import type { Event } from './EventType';
+import type { EventType } from './types/EventType';
 
 function Events() {
-    const [events, setEvents] = useState<Event[]>([]);
+    const [events, setEvents] = useState<EventType[]>([]);
     const [locations, setLocations] = useState<string[]>([]);
     const [filteredLocation, setFilteredLocation] = useState<string>("");
     const [keyword, setKeyword] = useState<string>("");
@@ -46,7 +46,7 @@ function Events() {
             }
             const data = await response.json();
             const seen = new Set();
-            data.map((event: Event) => {
+            data.map((event: EventType) => {
                 if (!seen.has(event.location)) {
                     seen.add(event.location);
                     return event.location;
