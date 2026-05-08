@@ -6,3 +6,10 @@ export type EventType = {
   location: string;
   date: Date;
 };
+
+export type FormData = {
+  title: string,
+  description: string,
+  type: string,
+  location: string
+}

@@ -14,7 +14,6 @@ const EMPTY_EVENT: EventType = {
 function EventCard() {
     const [event, setEvent] = useState<EventType>(EMPTY_EVENT);
     const { id } = useParams();
-    console.log(useParams());
 
     useEffect(() => {
 
@@ -31,7 +30,7 @@ function EventCard() {
             }
         }
         fetchEvent();
-    }, []);
+    }, [event]);
 
     return (
         <>
