@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import type { EventType } from './types/EventType';
 
 function Events() {
-    const { events } = useEventsContext();
+    const { events, refetch } = useEventsContext();
     const [filteredEvents, setFilteredEvents] = useState<EventType[]>([]);
     const [locations, setLocations] = useState<string[]>([]);
     const [filteredLocation, setFilteredLocation] = useState<string>("");
@@ -36,6 +36,7 @@ function Events() {
     }, [debouncedKeyword]);
 
     useEffect(() => {
+        refetch();
         setFilteredEvents([...events]);
         findLocations();
     }, [events]);

@@ -1,6 +1,6 @@
 import { useState, useEffect, type ReactNode } from 'react';
 import { EventsContext } from '../contexts/EventsContext';
-import type { EventType } from '../types/EventType';
+import type { EventType, FormData } from '../types/EventType';
 import type { EventsContextType } from '../types/EventsContextType'
 
 export default function EventsProvider({ children }: { children: ReactNode }) {
@@ -29,11 +29,28 @@ export default function EventsProvider({ children }: { children: ReactNode }) {
         fetchEvents();
     }, []);
 
+    const updateEvent = async (id: number, formData: FormData) => {
+        try {
+            const response = await fetch(`http://localhost:3000/events/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            });
+            const data = await response.json();
+            // return data;
+        } catch (error) {
+            console.error(`Error occurred while updating event: ${error}`);
+        }
+    };
+
     const value: EventsContextType = {
         events,
         loading,
         error,
-        refetch: fetchEvents
+        refetch: fetchEvents,
+        updateEvent
     };
 
     return (

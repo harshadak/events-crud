@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { useEventsContext, findSingleEvent, updateEvent } from "./hooks/EventHooks";
+import { useEventsContext } from "./hooks/EventHooks";
 import { useParams, useNavigate } from 'react-router-dom';
 import type { EventType, FormData } from "./types/EventType";
 
 function EventForm() {
-    const { events } = useEventsContext();
+    const { events, updateEvent } = useEventsContext();
     const [formData, setFormData] = useState<FormData>({
         title: '',
         description: '',
@@ -18,8 +18,6 @@ function EventForm() {
     const isEditing = Boolean(id);
 
     const foundEvent = id ? events.find(event => event.id === parseInt(id)) : undefined;
-    // const foundEvent = id ? findSingleEvent(id) : undefined;
-    console.log(`foundEvent = ${foundEvent} | isEditing = ${isEditing}`);
 
     // Load event data when editing
     useEffect(() => {
@@ -31,8 +29,7 @@ function EventForm() {
                 description: foundEvent.description || '',
                 type: foundEvent.type || '',
                 location: foundEvent.location || ''
-            }); 
-            console.log('setFormData = ', setFormData);
+            });
         }
     }, [foundEvent, isEditing]);
 
