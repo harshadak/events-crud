@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useEventsContext } from "./hooks/EventHooks";
 import { useParams, useNavigate } from 'react-router-dom';
-import type { EventType, FormData } from "./types/EventType";
+import type { FormData } from "./types/EventType";
 
 function EventForm() {
     const { events, updateEvent } = useEventsContext();
@@ -21,9 +21,9 @@ function EventForm() {
 
     // Load event data when editing
     useEffect(() => {
-        
+
         if (foundEvent && isEditing) {
-            
+
             setFormData({
                 title: foundEvent.title || '',
                 description: foundEvent.description || '',
@@ -33,23 +33,40 @@ function EventForm() {
         }
     }, [foundEvent, isEditing]);
 
-    // Handle form submission
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+    const addEvent = async (formData: FormData) => {
+        try {
+            const response = await fetch(`http://localhost:3000/events/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            });
 
-        if (isEditing && id) {
-            // Update existing event
-            updateEvent(parseInt(id), formData);
-            navigate(`/events/${id}`);
-        } else {
-            // Create new event
-            const newEvent: EventType = {
-                id: Date.now(),
-                ...formData,
-                date: new Date()
-            };
-            // addEvent(newEvent);
-            navigate('/events');
+            if (!response.ok) {
+                throw new Error(`Failed to create event. Status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error(`Error occurred while updating event: ${error}`);
+        }
+    };
+
+    // Handle form submission
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        try {
+            if (isEditing && id) {
+                await updateEvent(parseInt(id), formData);
+                navigate(`/events/${id}`);
+            } else {
+                await addEvent(formData);
+                navigate('/events');
+            }
+        } catch (error) {
+            console.error('Unable to submit event form', error);
         }
     };
 
@@ -66,7 +83,7 @@ function EventForm() {
     return (
         <>
             <form onSubmit={handleSubmit} className="event-form">
-                <div style={{ display: 'grid'}}>
+                <div style={{ display: 'grid' }}>
                     <label htmlFor="title">Title *</label>
                     <input
                         type="text"
@@ -96,12 +113,13 @@ function EventForm() {
                         placeholder="e.g., Conference, Workshop, Meetup"
                     />
 
-                    <label htmlFor="location">Location</label>
+                    <label htmlFor="location">Location *</label>
                     <input
                         type="text"
                         id="location"
                         value={formData.location}
                         onChange={(e) => handleChange({ location: e.target.value })}
+                        required
                         placeholder="Venue name or online link"
                     />
                 </div>

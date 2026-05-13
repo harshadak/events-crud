@@ -104,6 +104,9 @@ function Events() {
                 ))}
             </select>
 
+            {/* Add a new event */}
+            <Link to="/events/new-event-form">Add new event</Link>
+
             {filteredEvents.map(event => (
                 <div key={event.id} className='event-card'>
                     <Link to={`/events/${event.id}`}><h3>{event.title}</h3></Link>

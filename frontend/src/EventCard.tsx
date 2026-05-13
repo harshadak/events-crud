@@ -7,8 +7,7 @@ const EMPTY_EVENT: EventType = {
   title: "",
   description: "",
   type: "",
-  location: "",
-  date: new Date,
+  location: ""
 }; // Check if this is necessary or if we can just use null and handle it in the component
 
 function EventCard() {
@@ -39,7 +38,7 @@ function EventCard() {
                 <p>{event.description}</p>
                 <p>{event.type}</p>
                 <p>{event.location}</p>
-                <p>{event.date && new Date(event.date).toLocaleDateString()}</p>
+                {/* <p>{event.date && new Date(event.date).toLocaleDateString()}</p> */}
             </div>
             <Link to="/events" className="btn">Go back to Events</Link>
             <Link to={`/events/edit-form/${id}`}> Edit Event</Link>
