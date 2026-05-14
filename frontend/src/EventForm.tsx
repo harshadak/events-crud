@@ -4,7 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import type { FormData } from "./types/EventType";
 
 function EventForm() {
-    const { events, updateEvent } = useEventsContext();
+    const { events, updateEvent, refetch } = useEventsContext();
     const [formData, setFormData] = useState<FormData>({
         title: '',
         description: '',
@@ -63,6 +63,7 @@ function EventForm() {
                 navigate(`/events/${id}`);
             } else {
                 await addEvent(formData);
+                refetch();
                 navigate('/events');
             }
         } catch (error) {
