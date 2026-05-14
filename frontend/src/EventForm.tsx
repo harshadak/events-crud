@@ -9,7 +9,8 @@ function EventForm() {
         title: '',
         description: '',
         type: '',
-        location: ''
+        location: '',
+        date: ''
     });
 
     const navigate = useNavigate();
@@ -28,7 +29,8 @@ function EventForm() {
                 title: foundEvent.title || '',
                 description: foundEvent.description || '',
                 type: foundEvent.type || '',
-                location: foundEvent.location || ''
+                location: foundEvent.location || '',
+                date: foundEvent.date || ''
             });
         }
     }, [foundEvent, isEditing]);
@@ -122,6 +124,16 @@ function EventForm() {
                         onChange={(e) => handleChange({ location: e.target.value })}
                         required
                         placeholder="Venue name or online link"
+                    />
+
+                    <label htmlFor="date">Date *</label>
+                    <input
+                        type="date"
+                        id="date"
+                        value={formData.date}
+                        onChange={(e) => handleChange({ date: e.target.value })}
+                        required
+                        placeholder="Select a date"
                     />
                 </div>
 

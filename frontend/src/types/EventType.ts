@@ -4,11 +4,13 @@ export type EventType = {
   description?: string;
   type?: string
   location: string;
+  date: string;
 };
 
 export type FormData = {
-  title: string,
-  description: string,
-  type: string,
-  location: string
+  title: string;
+  description: string;
+  type: string;
+  location: string;
+  date: string;
 }

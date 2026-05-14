@@ -20,7 +20,7 @@ const Event = sequelize.define('Event', {
     },
     date: {
         type: DataTypes.DATE,
-        allowNull: true
+        allowNull: false
     }
 });
 
